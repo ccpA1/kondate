@@ -8,298 +8,234 @@
   <title>今夜の献立</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
     :root {
-      --accent: #FF6B35;
-      --accent-light: #FFF0EB;
-      --bg: #F5F5F7;
-      --card: #FFFFFF;
-      --text: #1C1C1E;
-      --sub: #8E8E93;
-      --border: #E5E5EA;
-      --safe-top: env(safe-area-inset-top, 0px);
-      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --accent: #FF6B35; --accent-light: #FFF0EB; --bg: #F5F5F7; --card: #FFFFFF;
+      --text: #1C1C1E; --sub: #8E8E93; --border: #E5E5EA;
+      --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
-
-    body {
-      font-family: -apple-system, 'Hiragino Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100dvh;
-      padding-top: calc(var(--safe-top) + 8px);
-      padding-bottom: calc(var(--safe-bottom) + 24px);
-    }
-
+    body { font-family: -apple-system, 'Hiragino Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100dvh; padding-top: calc(var(--safe-top) + 8px); padding-bottom: calc(var(--safe-bottom) + 24px); }
     .header { text-align: center; padding: 14px 20px 16px; }
     .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
     .header p  { font-size: 13px; color: var(--sub); margin-top: 3px; }
-
-    .card {
-      margin: 0 16px 12px;
-      background: var(--card);
-      border-radius: 16px;
-      padding: 14px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    }
+    .card { margin: 0 16px 12px; background: var(--card); border-radius: 16px; padding: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
     .card-label { font-size: 13px; font-weight: 600; color: var(--sub); margin-bottom: 8px; }
-
-    .tags-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      min-height: 28px;
-      margin-bottom: 10px;
-    }
-    .tag {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      background: var(--accent-light);
-      color: var(--accent);
-      border-radius: 20px;
-      padding: 4px 10px;
-      font-size: 14px;
-      font-weight: 600;
-      animation: pop 0.15s ease;
-    }
+    .tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; min-height: 28px; margin-bottom: 10px; }
+    .tag { display: flex; align-items: center; gap: 3px; background: var(--accent-light); color: var(--accent); border-radius: 20px; padding: 4px 10px; font-size: 14px; font-weight: 600; animation: pop 0.15s ease; }
     @keyframes pop { from { transform: scale(0.75); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .tag-del { font-size: 15px; cursor: pointer; opacity: 0.55; margin-left: 2px; }
-
     .input-row { display: flex; gap: 8px; }
-    .ing-input {
-      flex: 1;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 16px;
-      font-family: inherit;
-      outline: none;
-      background: #FAFAFA;
-      transition: border-color 0.15s;
-    }
+    .ing-input { flex: 1; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 16px; font-family: inherit; outline: none; background: #FAFAFA; transition: border-color 0.15s; }
     .ing-input:focus { border-color: var(--accent); background: #fff; }
-    .add-btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      width: 46px;
-      font-size: 24px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 0.1s, opacity 0.1s;
-    }
+    .add-btn { background: var(--accent); color: #fff; border: none; border-radius: 10px; width: 46px; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.1s, opacity 0.1s; }
     .add-btn:active { transform: scale(0.9); opacity: 0.8; }
-
-    .suggest-btn {
-      display: block;
-      width: calc(100% - 32px);
-      margin: 0 16px 16px;
-      padding: 15px;
-      background: linear-gradient(135deg, #FF6B35, #FF8C42);
-      color: #fff;
-      border: none;
-      border-radius: 14px;
-      font-size: 17px;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(255,107,53,0.35);
-      transition: transform 0.12s, box-shadow 0.12s;
-    }
+    .suggest-btn { display: block; width: calc(100% - 32px); margin: 0 16px 16px; padding: 15px; background: linear-gradient(135deg, #FF6B35, #FF8C42); color: #fff; border: none; border-radius: 14px; font-size: 17px; font-weight: 700; font-family: inherit; cursor: pointer; box-shadow: 0 4px 14px rgba(255,107,53,0.35); transition: transform 0.12s, box-shadow 0.12s; }
     .suggest-btn:active { transform: scale(0.97); box-shadow: 0 2px 6px rgba(255,107,53,0.2); }
-
     .results { padding: 0 16px; }
-    .results-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
+    .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
     .results-title { font-size: 16px; font-weight: 700; }
-    .shuffle-btn {
-      background: none;
-      border: 1.5px solid var(--border);
-      border-radius: 20px;
-      padding: 5px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--sub);
-      cursor: pointer;
-      display: flex; align-items: center; gap: 4px;
-    }
+    .shuffle-btn { background: none; border: 1.5px solid var(--border); border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 600; color: var(--sub); cursor: pointer; display: flex; align-items: center; gap: 4px; }
     .shuffle-btn:active { background: var(--border); }
-
-    .main-card {
-      background: var(--card);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      margin-bottom: 10px;
-      animation: slideUp 0.22s ease;
-    }
+    .main-card { background: var(--card); border-radius: 18px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 10px; animation: slideUp 0.22s ease; }
     @keyframes slideUp { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-    .main-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: var(--accent-light);
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 20px;
-      margin-bottom: 10px;
-    }
+    .main-badge { display: inline-flex; align-items: center; gap: 5px; background: var(--accent-light); color: var(--accent); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
     .main-body { display: flex; align-items: center; gap: 14px; }
     .main-icon { font-size: 48px; line-height: 1; flex-shrink: 0; }
     .main-info { flex: 1; min-width: 0; }
     .main-name { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 4px; }
     .main-desc { font-size: 13px; color: var(--sub); line-height: 1.4; }
-
-    .recipe-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 2px;
-      width: 100%;
-      margin-top: 14px;
-      padding: 12px;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 12px;
-      text-decoration: none;
-      transition: transform 0.1s, opacity 0.1s;
-    }
+    .recipe-btn { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 2px; width: 100%; margin-top: 14px; padding: 12px; background: var(--accent); color: #fff; border-radius: 12px; text-decoration: none; transition: transform 0.1s, opacity 0.1s; }
     .recipe-btn:active { transform: scale(0.97); opacity: 0.88; }
     .recipe-btn-main { font-size: 15px; font-weight: 700; }
     .recipe-btn-site { font-size: 11px; opacity: 0.75; font-weight: 500; }
-
     .simple-label { font-size: 13px; font-weight: 700; color: var(--sub); margin-bottom: 8px; }
     .simple-list { display: flex; flex-direction: column; gap: 8px; }
-    .simple-card {
-      background: var(--card);
-      border-radius: 14px;
-      padding: 13px 15px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      animation: slideUp 0.22s ease;
-    }
+    .simple-card { background: var(--card); border-radius: 14px; padding: 13px 15px; display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); animation: slideUp 0.22s ease; }
     .simple-icon { font-size: 28px; flex-shrink: 0; }
     .simple-info { flex: 1; }
     .simple-name { font-size: 16px; font-weight: 700; }
     .simple-tip  { font-size: 12px; color: var(--sub); margin-top: 2px; }
-    .simple-badge {
-      font-size: 10px;
-      font-weight: 700;
-      background: #E8F5E9;
-      color: #34C759;
-      padding: 3px 8px;
-      border-radius: 10px;
-      flex-shrink: 0;
-    }
-
+    .simple-badge { font-size: 10px; font-weight: 700; background: #E8F5E9; color: #34C759; padding: 3px 8px; border-radius: 10px; flex-shrink: 0; }
     .empty { text-align: center; padding: 36px 20px; color: var(--sub); }
     .empty .e-icon { font-size: 56px; margin-bottom: 12px; }
     .empty p { font-size: 15px; line-height: 1.6; }
   </style>
 </head>
 <body>
-
 <div class="header">
   <h1>🍽 今夜の献立</h1>
   <p>食材を入れると夕食の献立を提案します</p>
 </div>
-
 <div class="card">
   <div class="card-label">🛒 家にある食材（調味料は不要）</div>
   <div class="tags-wrap" id="tagWrap"></div>
   <div class="input-row">
-    <input class="ing-input" id="ingInput" type="text"
-      placeholder="例：鶏肉、卵、キャベツ…"
-      autocomplete="off" autocorrect="off"
-      inputmode="text" enterkeyhint="done">
+    <input class="ing-input" id="ingInput" type="text" placeholder="例：鶏肉、卵、キャベツ…" autocomplete="off" autocorrect="off" inputmode="text" enterkeyhint="done">
     <button class="add-btn" id="addBtn">＋</button>
   </div>
 </div>
-
 <button class="suggest-btn" id="suggestBtn">今夜の献立を提案する</button>
-
 <div class="results" id="results">
   <div class="empty">
     <div class="e-icon">🥘</div>
     <p>食材を入力して<br>「今夜の献立を提案する」を押してください<br><br><span style="font-size:12px;">醤油・塩などの調味料は入力不要です</span></p>
   </div>
 </div>
-
 <script>
 const SITE = {
-  kurashiru: { label: 'クラシル',          base: 'https://www.kurashiru.com/search?query=' },
-  kikkoman:  { label: 'キッコーマン',       base: 'https://www.kikkoman.co.jp/homecook/search/?search=' },
-  sirogohan: { label: '白ご飯.com',        base: 'https://www.sirogohan.com/search/?q=' },
-  dish:      { label: 'ディッシュキッチン',  base: 'https://dish.allabout.co.jp/articles/search/?keyword=' },
+  kurashiru: { label: 'クラシル',         base: 'https://www.kurashiru.com/search?query=' },
+  kikkoman:  { label: 'キッコーマン',      base: 'https://www.kikkoman.co.jp/homecook/search/?search=' },
+  sirogohan: { label: '白ご飯.com',       base: 'https://www.sirogohan.com/search/?q=' },
+  dish:      { label: 'ディッシュキッチン', base: 'https://dish.allabout.co.jp/articles/search/?keyword=' },
 };
 
 const MAIN_DISHES = [
-  { name: '鶏の唐揚げ',           icon: '🍗', site: 'kurashiru', desc: 'ご飯が進む定番おかず。ジューシーに仕上げるコツあり', keys: [['鶏肉']] },
-  { name: '豚の生姜焼き',         icon: '🥩', site: 'sirogohan', desc: '甘辛のたれがご飯によく合う、家庭の定番おかず', keys: [['豚肉']] },
-  { name: 'ハンバーグ',           icon: '🍔', site: 'kurashiru', desc: 'ふっくらジューシーに仕上げるコツあり', keys: [['合いびき肉', '豚ひき肉', '牛ひき肉']] },
-  { name: '麻婆豆腐',             icon: '🥘', site: 'kikkoman',  desc: 'ピリ辛でご飯が止まらない。豆腐のトロっと感が絶妙', keys: [['豆腐'], ['豚ひき肉', '鶏ひき肉']] },
-  { name: '肉じゃが',             icon: '🍲', site: 'sirogohan', desc: '甘辛の味付けがしみた、ほっとする和の定番煮物', keys: [['じゃがいも'], ['豚肉', '牛肉']] },
-  { name: '鶏の照り焼き',         icon: '🍗', site: 'kikkoman',  desc: '照り照りの甘辛タレで、ご飯がモリモリ進む一品', keys: [['鶏肉']] },
-  { name: 'チキン南蛮',           icon: '🍗', site: 'dish',      desc: 'タルタルソースたっぷりのボリューム満点おかず', keys: [['鶏肉'], ['卵']] },
-  { name: 'とんかつ',             icon: '🥩', site: 'sirogohan', desc: 'サクサクの衣と柔らかお肉。揚げ方のコツを参考に', keys: [['豚肉']] },
-  { name: '鮭のムニエル',         icon: '🐟', site: 'dish',      desc: 'バターの香りが食欲をそそる、シンプルで上品な一品', keys: [['鮭']] },
-  { name: '鮭の塩焼き',           icon: '🐟', site: 'sirogohan', desc: '素材の旨みを活かしたシンプルな和食の定番', keys: [['鮭']] },
-  { name: 'ロールキャベツ',       icon: '🥬', site: 'kikkoman',  desc: 'ふっくら肉だねとキャベツの甘みが絶妙', keys: [['キャベツ'], ['合いびき肉', '豚ひき肉']] },
-  { name: '回鍋肉',               icon: '🥢', site: 'kurashiru', desc: 'キャベツのシャキシャキ感と豚肉の旨みがたまらない', keys: [['豚肉'], ['キャベツ']] },
-  { name: '豚バラ大根',           icon: '🍲', site: 'sirogohan', desc: '大根に豚の旨みがしみた、とろとろの煮物', keys: [['豚肉'], ['大根']] },
-  { name: 'エビチリ',             icon: '🦐', site: 'dish',      desc: 'プリプリのエビにピリ辛チリソースが絡む中華の定番', keys: [['エビ']] },
-  { name: '筑前煮',               icon: '🥘', site: 'sirogohan', desc: '根菜たっぷり、だしの旨みがしみた本格和食', keys: [['鶏肉']] },
-  { name: '豚キムチ炒め',         icon: '🥢', site: 'kurashiru', desc: '旨辛キムチと豚肉の組み合わせ。ご飯が止まらない', keys: [['豚肉'], ['キムチ']] },
-  { name: 'マーボーナス',         icon: '🍆', site: 'kikkoman',  desc: 'なすがとろとろ。ご飯によく合うピリ辛中華おかず', keys: [['なす'], ['豚ひき肉']] },
-  { name: 'ぶり大根',             icon: '🐟', site: 'sirogohan', desc: 'ぶりの旨みが大根にしみしみ。冬の定番', keys: [['ぶり'], ['大根']] },
-  { name: '白菜と豚のミルフィーユ鍋', icon: '🍲', site: 'kurashiru', desc: '重ねるだけで旨みたっぷり。ポン酢で食べると絶品', keys: [['白菜'], ['豚肉']] },
-  { name: 'カレーライス',         icon: '🍛', site: 'dish',      desc: '誰もが大好きなカレー。野菜ごろごろで食べ応えあり', keys: [['鶏肉', '豚肉', '牛肉'], ['カレールー']] },
-  { name: '親子丼',               icon: '🍚', site: 'kikkoman',  desc: 'だしのきいたつゆと半熟卵がたまらない丼もの', keys: [['鶏肉'], ['卵']] },
-  { name: '豚丼',                 icon: '🍚', site: 'sirogohan', desc: '甘辛のたれが絡んだ豚肉でご飯が進む丼もの', keys: [['豚肉']] },
-  { name: '牛丼',                 icon: '🍚', site: 'kurashiru', desc: 'ほんのり甘辛の牛肉がご飯にのってボリューム満点', keys: [['牛肉']] },
-  { name: 'ビーフステーキ',       icon: '🥩', site: 'dish',      desc: 'シンプルに焼くだけで絶品。ソースにこだわって', keys: [['牛肉']] },
-  { name: '豚汁',                 icon: '🍲', site: 'sirogohan', desc: '豚肉と根菜の旨みたっぷり。体が温まる汁物', keys: [['豚肉']] },
-  { name: 'なすの煮浸し',         icon: '🍆', site: 'kikkoman',  desc: 'だしを含んだなすがトロっと。さっぱり食べやすい', keys: [['なす']] },
-  { name: 'じゃがいもの煮物',     icon: '🥔', site: 'kikkoman',  desc: 'ほくほくじゃがいもに甘辛のだしがしみしみ', keys: [['じゃがいも']] },
-  { name: '大根の煮物',           icon: '🥗', site: 'sirogohan', desc: 'ほろっとやわらかい大根がメインの優しい味わい', keys: [['大根']] },
+  // ── 鶏肉 ──
+  { name: '鶏の唐揚げ',         icon:'🍗', site:'kurashiru', desc:'ご飯が進む定番おかず。ジューシーに仕上げるコツあり',       keys:[['鶏肉']] },
+  { name: '鶏の照り焼き',       icon:'🍗', site:'kikkoman',  desc:'照り照りの甘辛タレで、ご飯がモリモリ進む一品',             keys:[['鶏肉']] },
+  { name: 'チキン南蛮',         icon:'🍗', site:'dish',      desc:'タルタルソースたっぷりのボリューム満点おかず',               keys:[['鶏肉'],['卵']] },
+  { name: '親子丼',             icon:'🍚', site:'kikkoman',  desc:'だしのきいたつゆと半熟卵がたまらない丼もの',                 keys:[['鶏肉'],['卵']] },
+  { name: '筑前煮',             icon:'🥘', site:'sirogohan', desc:'根菜たっぷり、だしの旨みがしみた本格和食',                   keys:[['鶏肉']] },
+  { name: '鶏肉のクリーム煮',   icon:'🍲', site:'kurashiru', desc:'ほろっと柔らかい鶏肉と濃厚クリームソースが絶品',             keys:[['鶏肉']] },
+  { name: '鶏肉のトマト煮',     icon:'🍲', site:'dish',      desc:'トマトの酸味と鶏の旨みが合わさった洋風おかず',               keys:[['鶏肉'],['トマト']] },
+  { name: '鶏肉のみそ焼き',     icon:'🍗', site:'kikkoman',  desc:'味噌の香ばしさとジューシーな鶏肉がベストマッチ',             keys:[['鶏肉']] },
+  { name: 'チキンピカタ',       icon:'🍗', site:'dish',      desc:'卵をまとわせて焼いた、洋風チキンおかず',                     keys:[['鶏肉'],['卵']] },
+  { name: '棒棒鶏',             icon:'🥢', site:'kurashiru', desc:'ごまだれがたっぷり。食欲をそそる中華の定番冷製料理',         keys:[['鶏肉']] },
+  { name: '水炊き',             icon:'🍲', site:'sirogohan', desc:'あっさり鶏だしが体に染みる、シンプルな鍋料理',               keys:[['鶏肉']] },
+  { name: 'ヤンニョムチキン',   icon:'🍗', site:'kurashiru', desc:'甘辛コチュジャンダレが絡んだ韓国風揚げ鶏',                   keys:[['鶏肉']] },
+  { name: 'チキンカレー',       icon:'🍛', site:'dish',      desc:'スパイスが効いた本格風カレー',                               keys:[['鶏肉'],['カレールー']] },
+  { name: '鶏むね肉のソテー',   icon:'🍗', site:'sirogohan', desc:'しっとり柔らかく仕上げるコツあり。ヘルシーな一品',           keys:[['鶏肉']] },
+  { name: '鶏肉のレモン蒸し',   icon:'🍋', site:'dish',      desc:'さっぱりレモン風味でヘルシー。蒸すだけ簡単',                 keys:[['鶏肉']] },
+  // ── 豚肉 ──
+  { name: '豚の生姜焼き',       icon:'🥩', site:'sirogohan', desc:'甘辛のたれがご飯によく合う、家庭の定番おかず',               keys:[['豚肉']] },
+  { name: 'とんかつ',           icon:'🥩', site:'sirogohan', desc:'サクサクの衣と柔らかお肉。揚げ方のコツを参考に',             keys:[['豚肉']] },
+  { name: '豚バラ大根',         icon:'🍲', site:'sirogohan', desc:'大根に豚の旨みがしみた、とろとろの煮物',                     keys:[['豚肉'],['大根']] },
+  { name: '回鍋肉',             icon:'🥢', site:'kurashiru', desc:'キャベツのシャキシャキ感と豚肉の旨みがたまらない',           keys:[['豚肉'],['キャベツ']] },
+  { name: '豚キムチ炒め',       icon:'🥢', site:'kurashiru', desc:'旨辛キムチと豚肉の組み合わせ。ご飯が止まらない',             keys:[['豚肉'],['キムチ']] },
+  { name: '豚丼',               icon:'🍚', site:'sirogohan', desc:'甘辛のたれが絡んだ豚肉でご飯が進む丼もの',                   keys:[['豚肉']] },
+  { name: '豚汁',               icon:'🍲', site:'sirogohan', desc:'豚肉と根菜の旨みたっぷり。体が温まる汁物',                   keys:[['豚肉']] },
+  { name: '白菜と豚のミルフィーユ鍋', icon:'🍲', site:'kurashiru', desc:'重ねるだけで旨みたっぷり。ポン酢で食べると絶品',       keys:[['白菜'],['豚肉']] },
+  { name: '豚の角煮',           icon:'🥩', site:'sirogohan', desc:'とろとろに煮込んだ豚バラ。甘辛いたれが絶品',                 keys:[['豚肉']] },
+  { name: '酢豚',               icon:'🥢', site:'kikkoman',  desc:'甘酸っぱいたれと揚げた豚肉が最高の組み合わせ',               keys:[['豚肉']] },
+  { name: '豚肉とキャベツの味噌炒め', icon:'🥬', site:'kurashiru', desc:'味噌の風味でご飯が進む、ボリューム満点炒め物',         keys:[['豚肉'],['キャベツ']] },
+  { name: 'ポークチャップ',     icon:'🥩', site:'dish',      desc:'ケチャップベースの甘辛タレが絡んだ洋風ポーク',               keys:[['豚肉']] },
+  { name: '豚肉と白菜の鍋',     icon:'🍲', site:'kikkoman',  desc:'あっさりだしで白菜と豚肉をシンプルに楽しむ鍋',               keys:[['豚肉'],['白菜']] },
+  { name: 'チャーシュー',       icon:'🍖', site:'sirogohan', desc:'自家製チャーシューはラーメンにも丼にも使える万能おかず',     keys:[['豚肉']] },
+  { name: 'スタミナ炒め',       icon:'🥢', site:'kurashiru', desc:'にんにくとニラの風味で食欲倍増のスタミナ満点炒め',           keys:[['豚肉']] },
+  // ── 牛肉 ──
+  { name: '牛丼',               icon:'🍚', site:'kurashiru', desc:'ほんのり甘辛の牛肉がご飯にのってボリューム満点',             keys:[['牛肉']] },
+  { name: 'ビーフステーキ',     icon:'🥩', site:'dish',      desc:'シンプルに焼くだけで絶品。ソースにこだわって',               keys:[['牛肉']] },
+  { name: 'ビーフシチュー',     icon:'🍲', site:'kurashiru', desc:'赤ワインで煮込んだ本格的な洋風シチュー',                     keys:[['牛肉']] },
+  { name: 'すき焼き',           icon:'🍲', site:'sirogohan', desc:'甘辛いだしで煮た牛肉と豆腐が絶妙なハーモニー',               keys:[['牛肉'],['豆腐']] },
+  { name: '肉豆腐',             icon:'🥘', site:'kikkoman',  desc:'牛肉と豆腐をだしで煮た、シンプルで旨い一品',                 keys:[['牛肉'],['豆腐']] },
+  { name: 'ハッシュドビーフ',   icon:'🍛', site:'dish',      desc:'デミグラスソースでじっくり煮込んだ洋風牛肉煮込み',           keys:[['牛肉']] },
+  // ── ひき肉 ──
+  { name: 'ハンバーグ',         icon:'🍔', site:'kurashiru', desc:'ふっくらジューシーに仕上げるコツあり',                       keys:[['合いびき肉','豚ひき肉','牛ひき肉']] },
+  { name: 'メンチカツ',         icon:'🥩', site:'sirogohan', desc:'サクサクの衣の中にジューシーな肉だね。揚げたて最高',         keys:[['合いびき肉','豚ひき肉']] },
+  { name: 'キーマカレー',       icon:'🍛', site:'kurashiru', desc:'スパイシーなひき肉カレー。ナンでも白ご飯でも',               keys:[['合いびき肉','豚ひき肉','鶏ひき肉'],['カレールー']] },
+  { name: '麻婆豆腐',           icon:'🥘', site:'kikkoman',  desc:'ピリ辛でご飯が止まらない。豆腐のトロっと感が絶妙',           keys:[['豆腐'],['豚ひき肉','鶏ひき肉']] },
+  { name: 'マーボーナス',       icon:'🍆', site:'kikkoman',  desc:'なすがとろとろ。ご飯によく合うピリ辛中華おかず',             keys:[['なす'],['豚ひき肉']] },
+  { name: '肉団子の甘酢あんかけ', icon:'🍡', site:'dish',   desc:'ふわふわ肉団子に甘酸っぱいあんが絡んで絶品',                 keys:[['豚ひき肉','鶏ひき肉']] },
+  { name: 'そぼろ丼',           icon:'🍚', site:'sirogohan', desc:'甘辛そぼろと卵で彩りよく。簡単でおいしい丼もの',             keys:[['鶏ひき肉','豚ひき肉'],['卵']] },
+  { name: 'なすとひき肉の炒め物', icon:'🍆', site:'kurashiru', desc:'なすとひき肉の相性抜群。ご飯がすすむ中華風炒め',         keys:[['なす'],['豚ひき肉','鶏ひき肉']] },
+  // ── 魚介 ──
+  { name: '鮭の塩焼き',         icon:'🐟', site:'sirogohan', desc:'素材の旨みを活かしたシンプルな和食の定番',                   keys:[['鮭']] },
+  { name: '鮭のムニエル',       icon:'🐟', site:'dish',      desc:'バターの香りが食欲をそそる、シンプルで上品な一品',           keys:[['鮭']] },
+  { name: 'ちゃんちゃん焼き',   icon:'🐟', site:'sirogohan', desc:'鮭と野菜を味噌で炒めた北海道の郷土料理',                     keys:[['鮭'],['キャベツ']] },
+  { name: 'ぶり大根',           icon:'🐟', site:'sirogohan', desc:'ぶりの旨みが大根にしみしみ。冬の定番',                       keys:[['ぶり'],['大根']] },
+  { name: 'さばの味噌煮',       icon:'🐟', site:'sirogohan', desc:'甘辛味噌でじっくり煮た、ご飯のお供に最高の一品',             keys:[['さば']] },
+  { name: 'さんまの塩焼き',     icon:'🐟', site:'sirogohan', desc:'秋の味覚。大根おろしと一緒にシンプルに',                     keys:[['さんま']] },
+  { name: 'あじの塩焼き',       icon:'🐟', site:'sirogohan', desc:'シンプルな塩焼きで素材の旨みを堪能',                         keys:[['あじ']] },
+  { name: 'たらのホイル焼き',   icon:'🐟', site:'dish',      desc:'野菜と一緒にホイルで包んで蒸し焼き。後片付けも楽',           keys:[['たら']] },
+  { name: 'エビチリ',           icon:'🦐', site:'dish',      desc:'プリプリのエビにピリ辛チリソースが絡む中華の定番',           keys:[['エビ']] },
+  { name: 'えびのガーリックソテー', icon:'🦐', site:'kurashiru', desc:'にんにくバターの香りとプリプリえびが最高',               keys:[['エビ']] },
+  { name: 'えびフライ',         icon:'🦐', site:'sirogohan', desc:'サクサクの衣に包まれたジューシーなえび。タルタルで',         keys:[['エビ']] },
+  { name: 'いかの照り焼き',     icon:'🦑', site:'kikkoman',  desc:'甘辛タレが絡んだいかの照り焼き。ご飯によく合う',             keys:[['いか']] },
+  { name: 'ほたてのバター醤油', icon:'🍽', site:'dish',      desc:'プリッとしたほたてにバター醤油が絡む贅沢な一品',             keys:[['ほたて']] },
+  { name: '白身魚のムニエル',   icon:'🐟', site:'dish',      desc:'シンプルに焼いてバターソースで。上品な洋食',                 keys:[['たら','白身魚','鯛','ひらめ']] },
+  { name: '魚のフライ',         icon:'🐟', site:'sirogohan', desc:'サクサクの衣でどんな魚も美味しく。タルタルソースで',         keys:[['さば','あじ','たら','白身魚']] },
+  // ── 野菜メイン ──
+  { name: '肉じゃが',           icon:'🍲', site:'sirogohan', desc:'甘辛の味付けがしみた、ほっとする和の定番煮物',               keys:[['じゃがいも'],['豚肉','牛肉']] },
+  { name: 'ロールキャベツ',     icon:'🥬', site:'kikkoman',  desc:'ふっくら肉だねとキャベツの甘みが絶妙',                       keys:[['キャベツ'],['合いびき肉','豚ひき肉']] },
+  { name: 'かぼちゃの煮物',     icon:'🎃', site:'sirogohan', desc:'ほっくり甘いかぼちゃの煮物。お弁当にも',                     keys:[['かぼちゃ']] },
+  { name: '里芋の煮物',         icon:'🥔', site:'sirogohan', desc:'ねっとり里芋にだしがしみた、懐かしい和食',                   keys:[['里芋']] },
+  { name: 'じゃがいもの煮物',   icon:'🥔', site:'kikkoman',  desc:'ほくほくじゃがいもに甘辛のだしがしみしみ',                   keys:[['じゃがいも']] },
+  { name: '大根の煮物',         icon:'🥗', site:'sirogohan', desc:'ほろっとやわらかい大根がメインの優しい味わい',               keys:[['大根']] },
+  { name: 'なすの煮浸し',       icon:'🍆', site:'kikkoman',  desc:'だしを含んだなすがトロっと。さっぱり食べやすい',             keys:[['なす']] },
+  { name: '青椒肉絲',           icon:'🫑', site:'kikkoman',  desc:'ピーマンと牛肉の細切り炒め。中華の定番',                     keys:[['ピーマン'],['牛肉','豚肉']] },
+  { name: 'チンジャオロースー', icon:'🫑', site:'kurashiru', desc:'ピーマンと細切り肉を高温でさっと炒めた本格中華',             keys:[['ピーマン'],['牛肉','豚肉']] },
+  // ── 卵 ──
+  { name: '卵とトマトの炒め物', icon:'🍅', site:'kurashiru', desc:'中華の定番。ふわふわ卵とトマトの酸味が絶妙',                 keys:[['卵'],['トマト']] },
+  // ── 洋食 ──
+  { name: 'グラタン',           icon:'🍝', site:'kurashiru', desc:'とろとろホワイトソースと香ばしいチーズが絶品',               keys:[['鶏肉','エビ'],['チーズ']] },
+  { name: 'オムライス',         icon:'🍳', site:'kurashiru', desc:'ふわとろ卵とチキンライスの黄金コンビ',                       keys:[['卵'],['鶏肉']] },
+  { name: 'クリームシチュー',   icon:'🍲', site:'dish',      desc:'野菜たっぷりのまろやかシチュー。寒い日に最高',               keys:[['鶏肉','豚肉'],['じゃがいも']] },
+  { name: 'ポトフ',             icon:'🍲', site:'kikkoman',  desc:'野菜と肉をじっくり煮込んだ、体に優しい洋風スープ',           keys:[['豚肉','鶏肉'],['にんじん']] },
+  // ── 中華・アジア ──
+  { name: 'カレーライス',       icon:'🍛', site:'dish',      desc:'誰もが大好きなカレー。野菜ごろごろで食べ応えあり',           keys:[['鶏肉','豚肉','牛肉'],['カレールー']] },
+  { name: '八宝菜',             icon:'🥢', site:'kikkoman',  desc:'たっぷり野菜と豚肉のとろみ炒め。中華の定番',                 keys:[['豚肉'],['白菜','キャベツ']] },
+  { name: '中華丼',             icon:'🍚', site:'kurashiru', desc:'野菜と肉のあんかけをご飯にのせた満足感の一品',               keys:[['豚肉','鶏肉'],['白菜','キャベツ']] },
+  { name: 'えびの塩炒め',       icon:'🦐', site:'dish',      desc:'プリプリえびをシンプルな塩味で。あっさりおいしい',           keys:[['エビ']] },
+  // ── 鍋 ──
+  { name: 'おでん',             icon:'🍢', site:'sirogohan', desc:'じっくり煮込んだおでんはだしがしみて格別',                   keys:[['大根','こんにゃく','卵']] },
 ];
 
 const SIMPLE_DISHES = [
-  { name: '目玉焼き',          icon: '🍳', keys: [['卵']],                         tip: 'フライパン2分で完成。塩こしょうだけでOK' },
-  { name: '卵焼き',            icon: '🥚', keys: [['卵']],                         tip: 'だし少しと砂糖で甘めに。巻くだけ簡単' },
-  { name: 'ゆで卵',            icon: '🥚', keys: [['卵']],                         tip: '水から10分ゆでるだけ。半熟もOK' },
-  { name: '炒り卵',            icon: '🥚', keys: [['卵']],                         tip: '卵をほぐして炒めるだけ。味付け簡単' },
-  { name: '冷奴',              icon: '🧊', keys: [['豆腐']],                       tip: 'ねぎ・醤油をかけるだけ。火を使わない' },
-  { name: 'ねぎ塩やっこ',      icon: '🧊', keys: [['豆腐'], ['ねぎ']],              tip: 'ねぎ+ごま油+塩をかけるだけ' },
-  { name: '納豆',              icon: '🫘', keys: [['納豆']],                       tip: 'そのまま盛るだけ。ねぎを混ぜると風味アップ' },
-  { name: 'もやし炒め',        icon: '🌱', keys: [['もやし']],                     tip: '強火でさっと炒めて塩こしょう。1分で完成' },
-  { name: 'キャベツの塩もみ',  icon: '🥬', keys: [['キャベツ']],                   tip: '千切りにして塩でもむだけ。箸休めに' },
-  { name: 'きゅうりの浅漬け',  icon: '🥒', keys: [['きゅうり']],                   tip: '塩もみして10分。さっぱり副菜に' },
-  { name: 'ほうれん草のおひたし', icon: '🥬', keys: [['ほうれん草']],              tip: '茹でて醤油とだし少々。シンプル副菜' },
-  { name: 'トマトスライス',    icon: '🍅', keys: [['トマト']],                     tip: '切って塩とオリーブオイルをかけるだけ' },
-  { name: 'ブロッコリーの塩ゆで', icon: '🥦', keys: [['ブロッコリー']],            tip: '茹でてマヨか塩で食べるだけ' },
-  { name: 'きんぴらごぼう',    icon: '🥕', keys: [['ごぼう']],                     tip: '細切りにして炒め、醤油とみりんで味付け' },
-  { name: 'にんじんのグラッセ', icon: '🥕', keys: [['にんじん']],                  tip: 'バターと砂糖で煮るだけ。甘くて美味しい' },
-  { name: '大根の漬物',        icon: '🥗', keys: [['大根']],                       tip: '塩もみ+酢砂糖で20分。さっぱり副菜' },
-  { name: 'ピーマンきんぴら',  icon: '🫑', keys: [['ピーマン']],                   tip: '細切りにして炒めて醤油+みりん。5分で完成' },
-  { name: '枝豆',              icon: '🫛', keys: [['枝豆']],                       tip: '塩ゆで5分。おつまみにもなる副菜' },
-  { name: '野菜炒め',          icon: '🥬', keys: [['キャベツ', 'もやし', 'ほうれん草', 'ピーマン', 'なす']], tip: '強火で一気に炒めて塩こしょうで味付け' },
-  { name: 'サラダ',            icon: '🥗', keys: [['レタス', 'トマト', 'きゅうり', 'キャベツ', 'にんじん']], tip: '切って盛るだけ。好きなドレッシングで' },
-  { name: '味噌汁',            icon: '🍵', keys: [['ねぎ', 'わかめ', '豆腐', '大根', 'なめこ', 'きのこ']], tip: 'だし+味噌+好きな具だけでOK' },
-  { name: 'なすの焼き浸し',    icon: '🍆', keys: [['なす']],                       tip: '焼いて醤油とだしに浸すだけ' },
-  { name: 'きのこのソテー',    icon: '🍄', keys: [['しめじ', 'えのき', 'まいたけ', 'エリンギ', 'しいたけ', 'きのこ']], tip: 'バターで炒めて醤油を少し。香り豊かな一品' },
-  { name: '小松菜のごま和え',  icon: '🥬', keys: [['小松菜']],                     tip: 'さっと茹でてごまと醤油で和えるだけ' },
+  // 卵
+  { name:'目玉焼き',            icon:'🍳', keys:[['卵']],                          tip:'フライパン2分で完成。塩こしょうだけでOK' },
+  { name:'卵焼き',              icon:'🥚', keys:[['卵']],                          tip:'だし少しと砂糖で甘めに。巻くだけ簡単' },
+  { name:'ゆで卵',              icon:'🥚', keys:[['卵']],                          tip:'水から10分ゆでるだけ。半熟もOK' },
+  { name:'炒り卵',              icon:'🥚', keys:[['卵']],                          tip:'卵をほぐして炒めるだけ。味付け簡単' },
+  { name:'だし巻き卵',          icon:'🥚', keys:[['卵']],                          tip:'だし入り卵液を巻くだけ。ふわふわに' },
+  { name:'温泉卵',              icon:'🥚', keys:[['卵']],                          tip:'70℃のお湯に30分。とろとろに仕上がる' },
+  // 豆腐
+  { name:'冷奴',                icon:'🧊', keys:[['豆腐']],                        tip:'ねぎ・醤油をかけるだけ。火を使わない' },
+  { name:'ねぎ塩やっこ',        icon:'🧊', keys:[['豆腐'],['ねぎ']],               tip:'ねぎ+ごま油+塩をかけるだけ' },
+  { name:'揚げ出し豆腐',        icon:'🥢', keys:[['豆腐']],                        tip:'片栗粉をつけて揚げ、だしをかけるだけ' },
+  { name:'厚揚げの焼き物',      icon:'🥢', keys:[['厚揚げ']],                      tip:'フライパンで焼いて醤油とおろしで食べる' },
+  // 野菜
+  { name:'もやし炒め',          icon:'🌱', keys:[['もやし']],                      tip:'強火でさっと炒めて塩こしょう。1分で完成' },
+  { name:'キャベツの塩もみ',    icon:'🥬', keys:[['キャベツ']],                    tip:'千切りにして塩でもむだけ。箸休めに' },
+  { name:'きゅうりの浅漬け',    icon:'🥒', keys:[['きゅうり']],                    tip:'塩もみして10分。さっぱり副菜に' },
+  { name:'ほうれん草のおひたし',icon:'🥬', keys:[['ほうれん草']],                  tip:'茹でて醤油とだし少々。シンプル副菜' },
+  { name:'トマトスライス',      icon:'🍅', keys:[['トマト']],                      tip:'切って塩とオリーブオイルをかけるだけ' },
+  { name:'ブロッコリーの塩ゆで',icon:'🥦', keys:[['ブロッコリー']],                tip:'茹でてマヨか塩で食べるだけ' },
+  { name:'きんぴらごぼう',      icon:'🥕', keys:[['ごぼう']],                      tip:'細切りにして炒め、醤油とみりんで味付け' },
+  { name:'にんじんのグラッセ',  icon:'🥕', keys:[['にんじん']],                    tip:'バターと砂糖で煮るだけ。甘くて美味しい' },
+  { name:'大根の漬物',          icon:'🥗', keys:[['大根']],                        tip:'塩もみ+酢砂糖で20分。さっぱり副菜' },
+  { name:'ピーマンきんぴら',    icon:'🫑', keys:[['ピーマン']],                    tip:'細切りにして炒めて醤油+みりん。5分で完成' },
+  { name:'なすの焼き浸し',      icon:'🍆', keys:[['なす']],                        tip:'焼いて醤油とだしに浸すだけ' },
+  { name:'アスパラのソテー',    icon:'🌿', keys:[['アスパラ']],                    tip:'バターでソテーして塩こしょう。5分で完成' },
+  { name:'きのこのソテー',      icon:'🍄', keys:[['しめじ','えのき','まいたけ','エリンギ','しいたけ','きのこ']], tip:'バターで炒めて醤油を少し。香り豊かな一品' },
+  { name:'小松菜のごま和え',    icon:'🥬', keys:[['小松菜']],                      tip:'さっと茹でてごまと醤油で和えるだけ' },
+  { name:'ほうれん草のソテー',  icon:'🥬', keys:[['ほうれん草']],                  tip:'バターでさっと炒めるだけ。にんにく風味も合う' },
+  { name:'かぼちゃのサラダ',    icon:'🎃', keys:[['かぼちゃ']],                    tip:'蒸してつぶしてマヨで和えるだけ' },
+  { name:'さつまいもの甘煮',    icon:'🍠', keys:[['さつまいも']],                  tip:'砂糖と醤油で煮るだけ。ほっくり甘い一品' },
+  { name:'とうもろこしのバター焼き', icon:'🌽', keys:[['とうもろこし']],           tip:'フライパンでバターで焼くだけ。香ばしい' },
+  { name:'オクラのおひたし',    icon:'🥬', keys:[['オクラ']],                      tip:'さっとゆでて醤油をかけるだけ' },
+  { name:'白菜の浅漬け',        icon:'🥬', keys:[['白菜']],                        tip:'塩もみして30分。シンプルな箸休め' },
+  // 大豆・乾物
+  { name:'納豆',                icon:'🫘', keys:[['納豆']],                        tip:'そのまま盛るだけ。ねぎを混ぜると風味アップ' },
+  { name:'ひじきの煮物',        icon:'🥢', keys:[['ひじき']],                      tip:'水で戻して醤油・みりんで煮るだけ' },
+  { name:'切り干し大根の煮物',  icon:'🥢', keys:[['切り干し大根']],                tip:'水で戻して甘辛く煮るだけ。常備菜に' },
+  // サラダ系
+  { name:'サラダ',              icon:'🥗', keys:[['レタス','トマト','きゅうり','キャベツ','にんじん']], tip:'切って盛るだけ。好きなドレッシングで' },
+  { name:'ポテトサラダ',        icon:'🥗', keys:[['じゃがいも']],                  tip:'茹でてつぶしてマヨで和えるだけ' },
+  { name:'マカロニサラダ',      icon:'🥗', keys:[['マカロニ']],                    tip:'茹でてマヨと野菜で和えるだけ' },
+  { name:'コールスロー',        icon:'🥗', keys:[['キャベツ']],                    tip:'千切りキャベツをマヨと酢で和えるだけ' },
+  { name:'きゅうりの酢の物',    icon:'🥒', keys:[['きゅうり']],                    tip:'薄切りにして酢・砂糖・塩で和えるだけ' },
+  { name:'わかめの酢の物',      icon:'🥗', keys:[['わかめ']],                      tip:'わかめをもどして三杯酢で和えるだけ' },
+  { name:'ごぼうサラダ',        icon:'🥕', keys:[['ごぼう']],                      tip:'細切りにして茹で、マヨで和えるだけ' },
+  { name:'春雨サラダ',          icon:'🥗', keys:[['春雨']],                        tip:'戻した春雨に野菜とごまだれで和えるだけ' },
+  { name:'アボカドサラダ',      icon:'🥑', keys:[['アボカド']],                    tip:'切って醤油とわさびをかけるだけ' },
+  // 汁物
+  { name:'味噌汁',              icon:'🍵', keys:[['ねぎ','わかめ','豆腐','大根','なめこ','きのこ']], tip:'だし+味噌+好きな具だけでOK' },
+  { name:'コンソメスープ',      icon:'🍵', keys:[['キャベツ','にんじん','たまねぎ','玉ねぎ']], tip:'野菜を切ってコンソメで煮るだけ' },
+  { name:'卵スープ',            icon:'🍵', keys:[['卵']],                          tip:'溶き卵をコンソメスープに流し入れるだけ' },
+  // その他
+  { name:'枝豆',                icon:'🫛', keys:[['枝豆']],                        tip:'塩ゆで5分。おつまみにもなる副菜' },
+  { name:'野菜炒め',            icon:'🥬', keys:[['キャベツ','もやし','ほうれん草','ピーマン','なす']], tip:'強火で一気に炒めて塩こしょうで味付け' },
+  { name:'ポテトフライ',        icon:'🍟', keys:[['じゃがいも']],                  tip:'細切りにして揚げるだけ。塩でシンプルに' },
+  { name:'白和え',              icon:'🥢', keys:[['豆腐'],['ほうれん草','にんじん']], tip:'豆腐をつぶして野菜と和えるだけ' },
 ];
 
 const SEASONINGS = new Set([
@@ -311,49 +247,33 @@ const SEASONINGS = new Set([
 ]);
 
 let ingredients = [];
-function norm(s) { return s.replace(/\s/g, '').toLowerCase(); }
-function matchAny(group, userList) {
-  return group.some(k => { const nk = norm(k); return userList.some(i => { const ni = norm(i); return ni.includes(nk) || nk.includes(ni); }); });
+function norm(s) { return s.replace(/\s/g,'').toLowerCase(); }
+function matchAny(group,userList){return group.some(k=>{const nk=norm(k);return userList.some(i=>{const ni=norm(i);return ni.includes(nk)||nk.includes(ni);});});}
+function realGroups(dish){return dish.keys.filter(g=>!g.every(k=>SEASONINGS.has(k)));}
+function canMake(dish){
+  if(ingredients.length===0)return true;
+  const groups=realGroups(dish);
+  if(groups.length===0)return true;
+  return groups.every(g=>matchAny(g,ingredients));
 }
-function realGroups(dish) { return dish.keys.filter(g => !g.every(k => SEASONINGS.has(k))); }
-function canMake(dish) {
-  if (ingredients.length === 0) return true;
-  const groups = realGroups(dish);
-  if (groups.length === 0) return true;
-  return groups.every(g => matchAny(g, ingredients));
-}
-function score(dish) {
-  let hits = 0;
-  for (const g of realGroups(dish)) { if (matchAny(g, ingredients)) hits++; }
-  return hits * 10 + Math.random();
-}
-function pick(list, exclude, checkFn) {
-  const pool = [...list].filter(d => !exclude.includes(d.name) && checkFn(d));
-  if (!pool.length) return null;
-  return pool.sort((a, b) => score(b) - score(a))[0];
-}
-function buildMenu() {
-  const used = [];
-  const main = pick(MAIN_DISHES, used, canMake);
-  if (!main) return null;
+function score(dish){let h=0;for(const g of realGroups(dish)){if(matchAny(g,ingredients))h++;}return h*10+Math.random();}
+function pick(list,exclude,checkFn){const pool=[...list].filter(d=>!exclude.includes(d.name)&&checkFn(d));if(!pool.length)return null;return pool.sort((a,b)=>score(b)-score(a))[0];}
+function buildMenu(){
+  const used=[];
+  const main=pick(MAIN_DISHES,used,canMake);
+  if(!main)return null;
   used.push(main.name);
-  const simples = [];
-  for (let i = 0; i < 3; i++) {
-    const s = pick(SIMPLE_DISHES, used, canMake);
-    if (s) { simples.push(s); used.push(s.name); }
-  }
-  return { main, simples };
+  const simples=[];
+  for(let i=0;i<3;i++){const s=pick(SIMPLE_DISHES,used,canMake);if(s){simples.push(s);used.push(s.name);}}
+  return{main,simples};
 }
-function render(menu) {
-  const el = document.getElementById('results');
-  if (!menu) {
-    el.innerHTML = `<div class="empty"><div class="e-icon">🤔</div><p>入力した食材で作れる料理が見つかりませんでした。<br>食材を追加してみてください。</p></div>`;
-    return;
-  }
-  const { main, simples } = menu;
-  const site = SITE[main.site];
-  const url  = site.base + encodeURIComponent(main.name);
-  el.innerHTML = `
+function render(menu){
+  const el=document.getElementById('results');
+  if(!menu){el.innerHTML=`<div class="empty"><div class="e-icon">🤔</div><p>入力した食材で作れる料理が見つかりませんでした。<br>食材を追加してみてください。</p></div>`;return;}
+  const{main,simples}=menu;
+  const site=SITE[main.site];
+  const url=site.base+encodeURIComponent(main.name);
+  el.innerHTML=`
     <div class="results-header">
       <span class="results-title">今夜の献立</span>
       <button class="shuffle-btn" id="shuffleBtn">🔀 シャッフル</button>
@@ -374,7 +294,7 @@ function render(menu) {
     </div>
     <div class="simple-label">🥢 サッと作れる副菜・一品</div>
     <div class="simple-list">
-      ${simples.map(s => `
+      ${simples.map(s=>`
         <div class="simple-card">
           <div class="simple-icon">${s.icon}</div>
           <div class="simple-info">
@@ -384,34 +304,29 @@ function render(menu) {
           <div class="simple-badge">簡単</div>
         </div>`).join('')}
     </div>`;
-  document.getElementById('shuffleBtn').addEventListener('click', () => render(buildMenu()));
+  document.getElementById('shuffleBtn').addEventListener('click',()=>render(buildMenu()));
 }
-
-const ingInput = document.getElementById('ingInput');
-const tagWrap  = document.getElementById('tagWrap');
-function addIngredient() {
-  const vals = ingInput.value.split(/[、,，\s　]+/).map(v => v.trim()).filter(Boolean);
-  vals.forEach(v => {
-    if (!v || ingredients.includes(v)) return;
+const ingInput=document.getElementById('ingInput');
+const tagWrap=document.getElementById('tagWrap');
+function addIngredient(){
+  const vals=ingInput.value.split(/[、,，\s　]+/).map(v=>v.trim()).filter(Boolean);
+  vals.forEach(v=>{
+    if(!v||ingredients.includes(v))return;
     ingredients.push(v);
-    const tag = document.createElement('div'); tag.className = 'tag';
-    const span = document.createElement('span'); span.textContent = v;
-    const del  = document.createElement('span'); del.className = 'tag-del'; del.textContent = '×'; del.dataset.name = v;
-    tag.appendChild(span); tag.appendChild(del);
-    tagWrap.appendChild(tag);
+    const tag=document.createElement('div');tag.className='tag';
+    const span=document.createElement('span');span.textContent=v;
+    const del=document.createElement('span');del.className='tag-del';del.textContent='×';del.dataset.name=v;
+    tag.appendChild(span);tag.appendChild(del);tagWrap.appendChild(tag);
   });
-  ingInput.value = '';
-  ingInput.focus();
+  ingInput.value='';ingInput.focus();
 }
-document.getElementById('addBtn').addEventListener('click', addIngredient);
-ingInput.addEventListener('keyup', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); addIngredient(); } });
-tagWrap.addEventListener('click', e => {
-  const del = e.target.closest('.tag-del');
-  if (!del) return;
-  ingredients = ingredients.filter(i => i !== del.dataset.name);
-  del.closest('.tag').remove();
+document.getElementById('addBtn').addEventListener('click',addIngredient);
+ingInput.addEventListener('keyup',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();addIngredient();}});
+tagWrap.addEventListener('click',e=>{
+  const del=e.target.closest('.tag-del');if(!del)return;
+  ingredients=ingredients.filter(i=>i!==del.dataset.name);del.closest('.tag').remove();
 });
-document.getElementById('suggestBtn').addEventListener('click', () => render(buildMenu()));
+document.getElementById('suggestBtn').addEventListener('click',()=>render(buildMenu()));
 </script>
 </body>
 </html>
